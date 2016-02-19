@@ -1,0 +1,93 @@
+java.util.priorityQueue
+
+public class Iddfs extends Node
+{
+
+	public static int distance(int num, int x, int y)
+	{	
+		if(num = 0)
+		{
+			return (abs(0-x) + abs(0-y));
+		}
+		
+		else if(num = 1)
+		{
+			return(abs(0-x)+ abs(1-y));
+		}
+		
+		else if(num = 2)
+		{
+			return(abs(0-x)+ abs(2-y));
+		}
+		
+		else if(num = 3)
+		{
+			return(abs(1-x)+ abs(0-y));
+		}
+		
+		else if(num = 4)
+		{
+			return(abs(1-x)+ abs(1-y));
+		}
+		
+		else if(num = 5)
+		{
+			return(abs(1-x)+ abs(2-y));
+		}
+		
+		else if(num = 6)
+		{
+			return(abs(2-x)+ abs(0-y));
+		}
+		
+		else if(num = 7)
+		{
+			return(abs(2-x)+ abs(1-y));
+		}
+		
+		else
+		{
+			return(abs(2-x)+ abs(2-y));
+		}
+
+	}
+	
+	public static int costToGo(int[][] state)
+	{
+		int optCost = 0;
+		int i = 0;
+		
+		while(i<10)
+		{
+			for(int x = 0; x<3; x++)
+			{
+				for(int y = 0; y<3; y++)
+				{
+					if(i = state[x][y])
+					{
+						optCost = optCost + distance(i,x,y);
+					}
+				}
+			}
+			i++;
+		}
+		
+		return optCost;
+	}
+	
+    public static void main(String[] args) {
+        int[][] initialState = {{5,0,4},{2,1,3},{6,7,8}};
+        int cost = 0;
+        
+        cost = costToGo(initalState);
+        
+        System.out.print(cost);
+        
+        
+    }
+    
+    
+    
+    
+    
+}
