@@ -8,8 +8,7 @@ public class IDDFS {
     //check if the current node is the goal state
     public static boolean isGoalState(Node currentNode, int[] goalState){
         
-        int[] temp = currentNode.getState();
-        if(temp.equals(goalState)){
+        if(currentNode.getState().equals(goalState)){
             return true;
         }else{
             return false;
@@ -21,11 +20,11 @@ public class IDDFS {
         Node n2;
         Node n3;
         Node n4;
+
         int[] s = new int[9];
-        
         if (isGoalState(n,goalState)){
             return n;
-        }else if(depth >=0){
+        }else if(depth > 0){
             //if the empty is on the left top
             if (n.state(0) == 0){
                 s[0] = n.state(3);
@@ -395,7 +394,7 @@ public class IDDFS {
         goalState[6] = 6;
         goalState[7] = 7;
         goalState[8] = 8;
-        int[] initState= new int[9];
+        int[] initState = new int[9];
         initState[0] = 5;
         initState[1] = 0;
         initState[2] = 4;
