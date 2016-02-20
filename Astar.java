@@ -3,7 +3,7 @@ import java.util.*;
 import java.math.*;
 
 public class Astar {
-	
+static int step = 0;	
 	public static boolean inChecklist(ArrayList<Node> list, Node node)
 	{
 		Node current = new Node();
@@ -48,6 +48,7 @@ public class Astar {
 	
 	public static void printPuzzle(int [][] node)
 	{
+		System.out.println("Step: " + step);
 		for(int i=0; i<3; i++)
 		{
 			for(int j=0; j<3; j++)
@@ -58,6 +59,7 @@ public class Astar {
 		}
 		
 		System.out.println("");
+		step++;
 	}
 	//calculates the distance from its goalstate
 	public static int distance(int num, int x, int y)
