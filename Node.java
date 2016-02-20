@@ -105,4 +105,18 @@ public class Node {
     	return this.cost2go;
     }
 
+    public boolean equals(Node other)
+    {
+    	for(int x =0; x<3; x++)
+    	{
+    		for(int y=0; y<3; y++)
+    		{
+    			if(!(this.twoState[x][y] == other.getTwoState()[x][y]))
+    			{
+    				return false;
+    			}
+    		}
+    	}
+    	return true;
+    }
 }

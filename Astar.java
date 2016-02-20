@@ -4,6 +4,48 @@ import java.math.*;
 
 public class Astar {
 	
+	public static boolean inChecklist(ArrayList<Node> list, Node node)
+	{
+		Node current = new Node();
+		for(int x=0; x<list.size(); x++)
+		{
+			current = list.get(x);
+			if(samePuzzle(current.getTwoState(),node.getTwoState()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean samePuzzle (int[][] a1, int[][]a2)
+    {
+    	for(int x =0; x<3; x++)
+    	{
+    		for(int y=0; y<3; y++)
+    		{
+    			if(!(a1[x][y] == a2[x][y]))
+    			{
+    				return false;
+    			}
+    		}
+    	}
+    	return true;
+    }
+	public static int[][] copyPuzzle(int [][] node)
+	{
+		int [][] copy = new int[3][3];
+		
+		for(int x=0; x<3; x++)
+		{
+			for(int y=0; y<3; y++)
+			{
+				copy[x][y] = node[x][y];
+			}
+		}
+		
+		return copy;
+	}
+	
 	public static void printPuzzle(int [][] node)
 	{
 		for(int i=0; i<3; i++)
@@ -119,7 +161,8 @@ public class Astar {
 		int y = 0;
 		int loc = findOpening(node);
 		int switchValue = 0;
-		int [][] change = node.clone();
+		int [][] change = new int[3][3];
+		change = copyPuzzle(node);
 		
 		if(loc == 0){
 			x = 0;
@@ -150,7 +193,8 @@ public class Astar {
 		int y = 0;
 		int loc = findOpening(node);
 		int switchValue = 0;
-		int[][] change = node.clone();
+		int [][] change = new int[3][3];
+		change = copyPuzzle(node);
 		
 		if(loc == 0){
 			x = 0;
@@ -180,7 +224,8 @@ public class Astar {
 		int y = 0;
 		int loc = findOpening(node);
 		int switchValue = 0;
-		int[][] change = node.clone();
+		int [][] change = new int[3][3];
+		change = copyPuzzle(node);
 		
 		if(loc == 0){
 			x = 0;
@@ -210,7 +255,8 @@ public class Astar {
 		int y = 0;
 		int loc = findOpening(node);
 		int switchValue = 0;
-		int [][] change = node.clone();
+		int [][] change = new int[3][3];
+		change = copyPuzzle(node);
 		
 		if(loc == 0){
 			x = 0;
@@ -233,7 +279,7 @@ public class Astar {
 		return change;
 	}
 	
-	public static void astarSearch(ArrayList<Node> tree, int [][] goalstate)
+	public static void astarSearch(ArrayList<Node> tree, int [][] goalstate, ArrayList<Node> checkList)
 	{
 		//first, go through the tree and determine the node with that should be expanded on
 		//this is determined by finding its cost2go and adding that value with its current depth
@@ -243,26 +289,25 @@ public class Astar {
 		int bestCost = 999;
 		int bestC2G = 999;
 		int currentC2G = 0;
-		
+		int loc = 0;
 		for(int i = 0; i<tree.size(); i++)
 		{
 			current = tree.get(i);
 			currentCost = current.getCost2go() + current.getDepth();
-			
-			if(currentCost<bestCost)
+			currentC2G = current.getCost2go();
+			if(currentCost<bestCost && !inChecklist(checkList,current))
 			{
 				best = current;
 				bestCost = currentCost;
 				bestC2G = currentC2G;
-				
+				loc = i;
 			}
 			
-			else if(currentC2G<bestC2G)
+			else if(currentC2G<bestC2G && !inChecklist(checkList,current))
 			{
 				best = current;
 				bestCost = currentCost;
 				bestC2G = currentC2G;
-				System.out.println(best.getDepth());
 			}
 		}
 		//once that node has been found generate 4 new nodes with each of the possible moves
@@ -270,25 +315,48 @@ public class Astar {
 		Node down = new Node(moveDown(best.getTwoState()),best,"down",best.getPathCost()+1,best.getDepth()+1,costToGo(moveDown(best.getTwoState())));
 		Node left = new Node(moveLeft(best.getTwoState()),best,"left",best.getPathCost()+1,best.getDepth()+1,costToGo(moveLeft(best.getTwoState())));
 		Node right = new Node(moveRight(best.getTwoState()),best,"right",best.getPathCost()+1,best.getDepth()+1,costToGo(moveRight(best.getTwoState())));
+		
 		//then check to see if any of these children are the goalstate
-		if(up.getTwoState().equals(goalstate))
+		if(samePuzzle(up.getTwoState(),goalstate))
 		{
 			printPuzzle(up.getTwoState());
-		}else if(down.getTwoState().equals(goalstate)){
+		}else if(samePuzzle(down.getTwoState(),goalstate)){
 			printPuzzle(down.getTwoState());
-		}else if(left.getTwoState().equals(goalstate)){
+		}else if(samePuzzle(left.getTwoState(),goalstate)){
 			printPuzzle(left.getTwoState());
-		}else if(right.getTwoState().equals(goalstate)){
+		}else if(samePuzzle(right.getTwoState(),goalstate)){
 			printPuzzle(right.getTwoState());
 		}
 		//if not add them to the tree and call the function again
 		//then print out the node that created the child (recursively printing the solution)
 		else{
+			
+			checkList.add(best);
+			if(!samePuzzle(up.getTwoState(),goalstate)){
 			tree.add(up);
-			tree.add(down);
-			tree.add(left);
-			tree.add(right);
-			astarSearch(tree,goalstate);
+			}
+			
+			if(!samePuzzle(down.getTwoState(),goalstate)){
+				tree.add(down);
+				}
+			
+			if(!samePuzzle(left.getTwoState(),goalstate)){
+				tree.add(left);
+				}
+			
+			if(!samePuzzle(right.getTwoState(),goalstate)){
+				tree.add(right);
+				}
+			for(int i=0; i<tree.size(); i++)
+			{
+				current = tree.get(i);
+				if(samePuzzle(best.getTwoState(),current.getTwoState()))
+				{
+					tree.remove(i);
+					i=0;
+				}
+			}
+			astarSearch(tree,goalstate, checkList);
 			printPuzzle(best.getTwoState());
 		}
 		
@@ -301,12 +369,13 @@ public class Astar {
         int cost = 0;
         
         ArrayList<Node> tree = new ArrayList<Node>();
-        
+        ArrayList<Node> checkList = new ArrayList<Node>();
         Node root = new Node(initialState,null,"",0,0,costToGo(initialState));
-        
+        int [][] copy = new int [3][3];
+        copy = copyPuzzle(initialState);
+        //System.out.println(samePuzzle(copy,initialState));
         tree.add(root);
-        astarSearch(tree,goalState);
-
+        astarSearch(tree,goalState, checkList);
 
 	}
 }
